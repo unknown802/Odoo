@@ -4,13 +4,13 @@ import { useAssetFlowStore } from "../store/assetFlowStore";
 import type { NotificationItem } from "../types";
 
 export function useNotifications(userId: string) {
-  const demoNotifications = useAssetFlowStore((state) => state.notifications);
+  const sampleNotifications = useAssetFlowStore((state) => state.notifications);
 
   return useQuery({
-    queryKey: ["notifications", userId, demoNotifications],
+    queryKey: ["notifications", userId, sampleNotifications],
     queryFn: async () => {
       if (!supabase) {
-        return demoNotifications.filter((notification) => notification.user_id === userId);
+        return sampleNotifications.filter((notification) => notification.user_id === userId);
       }
 
       const { data, error } = await supabase

@@ -1,8 +1,8 @@
 # AssetFlow Enterprise
 
-AssetFlow Enterprise is a hackathon-ready asset and resource management system built with Vite, React, Node.js, Express, TypeScript, and Supabase.
+AssetFlow Enterprise is a full-stack asset and resource operations platform built with Vite, React, Node.js, Express, TypeScript, and Supabase.
 
-It replaces spreadsheet-based asset tracking with role-aware workflows for:
+It replaces spreadsheet-based tracking with governed workflows for:
 
 - Asset registration, allocation, transfer, and return
 - Resource booking with temporal conflict prevention
@@ -11,11 +11,28 @@ It replaces spreadsheet-based asset tracking with role-aware workflows for:
 - Realtime notifications and activity logging
 - Reports, analytics, CSV exports, and PDF audit output
 
+## Product Capabilities
+
+- Lifecycle control: generated asset tags, QR support, custody history, condition tracking, and status automation.
+- Conflict prevention: server-side allocation checks and temporal booking overlap validation.
+- Workflow governance: role-gated transfer, maintenance, audit, reporting, and organization management flows.
+- Operational visibility: dashboard KPIs, overdue queues, utilization analytics, notifications, and activity logs.
+- Database security: Supabase RLS policies, profile bootstrap triggers, indexes, storage buckets, and service-role-only backend operations.
+
 ## Stack
 
 - Frontend: Vite, React 18, TypeScript, Tailwind CSS, TanStack Query, Zustand, React Hook Form, Zod, Recharts, Lucide, QR tooling
 - Backend: Node.js, Express, TypeScript, Zod, Supabase JS
 - Database: Supabase PostgreSQL with RLS policies, triggers, and indexes
+
+## Architecture
+
+```text
+frontend/      Role-aware React application and local sample workspace
+backend/       Express API, auth middleware, business rules, services, tests
+supabase/      PostgreSQL schema, RLS policies, triggers, seed data
+docs/          Product, API, and deployment documentation
+```
 
 ## Local Setup
 
@@ -60,20 +77,20 @@ supabase link --project-ref <your-project-ref>
 supabase db push
 ```
 
-For the hackathon project reference and setup notes, see [docs/SUPABASE_SETUP.md](docs/SUPABASE_SETUP.md).
+For project setup notes, see [docs/SUPABASE_SETUP.md](docs/SUPABASE_SETUP.md).
 
-## Demo Guide
+## Product Guide
 
-Use [docs/HACKATHON_DEMO.md](docs/HACKATHON_DEMO.md) for the judge walkthrough and [docs/API.md](docs/API.md) for backend endpoint notes.
+Use [docs/PRODUCT_GUIDE.md](docs/PRODUCT_GUIDE.md) for workflow details and [docs/API.md](docs/API.md) for backend endpoint notes.
 
-## Demo Mode
+## Local Sample Workspace
 
-The frontend works in demo mode when Supabase environment variables are missing. This keeps the hackathon walkthrough usable even before the database is linked.
+The frontend can run against local sample workspace data when Supabase environment variables are not configured. This keeps product development and UI review available before connecting a live database.
 
-## Repository Structure
+## Quality Gates
 
-```text
-backend/       Express API, business rules, auth middleware, services, tests
-frontend/      Vite React app, role-aware screens, realtime hooks, charts
-supabase/      PostgreSQL schema, RLS policies, triggers, seed data
+```bash
+npm run typecheck
+npm test
+npm run build
 ```

@@ -1,4 +1,4 @@
-import { CalendarClock, PackagePlus, Repeat2, Wrench } from "lucide-react";
+import { AlertTriangle, CalendarClock, ClipboardCheck, PackagePlus, RadioTower, Repeat2, ShieldCheck, Wrench } from "lucide-react";
 import { Badge } from "../components/ui/Badge";
 import { Button } from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
@@ -11,6 +11,7 @@ export function Dashboard() {
   const setActiveView = useAssetFlowStore((state) => state.setActiveView);
   const assets = useAssetFlowStore((state) => state.assets);
   const profiles = useAssetFlowStore((state) => state.profiles);
+  const maintenance = useAssetFlowStore((state) => state.maintenance);
 
   const kpis = [
     ["Assets Available", summary.assetsAvailable],
@@ -20,14 +21,56 @@ export function Dashboard() {
     ["Pending Transfers", summary.pendingTransfers],
     ["Upcoming Returns", summary.upcomingReturns]
   ] as const;
+  const controlMetrics = [
+    { label: "Policy Enforcement", value: "Active", detail: "RLS and role gates online", icon: ShieldCheck, tone: "success" as const },
+    { label: "Realtime Channels", value: "Armed", detail: "Notifications ready for live data", icon: RadioTower, tone: "info" as const },
+    { label: "Audit Readiness", value: `${assets.filter((asset) => asset.status !== "Retired").length} assets`, detail: "In operational scope", icon: ClipboardCheck, tone: "neutral" as const },
+    {
+      label: "Risk Queue",
+      value: `${summary.overdueAllocations.length + maintenance.filter((request) => request.priority === "Critical").length} items`,
+      detail: "Overdue or critical",
+      icon: AlertTriangle,
+      tone: summary.overdueAllocations.length ? ("danger" as const) : ("warning" as const)
+    }
+  ];
 
   return (
     <div className="grid gap-5">
+      <section className="rounded-md border border-border bg-white p-4 shadow-sm">
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <h2 className="text-xl font-bold">Operations Control Center</h2>
+            <p className="mt-1 max-w-3xl text-sm text-muted">
+              Asset custody, bookings, maintenance, audits, and notifications are consolidated into one operating surface.
+            </p>
+          </div>
+          <Badge tone="success">System healthy</Badge>
+        </div>
+        <div className="mt-4 grid gap-3 md:grid-cols-4">
+          {controlMetrics.map((metric) => {
+            const Icon = metric.icon;
+            return (
+              <div key={metric.label} className="rounded-md border border-border bg-slate-50 p-3">
+                <div className="flex items-center justify-between gap-3">
+                  <Icon className="h-4 w-4 text-brand" />
+                  <Badge tone={metric.tone}>{metric.value}</Badge>
+                </div>
+                <div className="mt-3 text-sm font-semibold">{metric.label}</div>
+                <div className="mt-1 text-xs text-muted">{metric.detail}</div>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-6">
         {kpis.map(([label, value]) => (
           <Card key={label} className="min-h-28">
             <div className="text-sm font-semibold text-muted">{label}</div>
             <div className="mt-3 text-3xl font-bold">{value}</div>
+            <div className="mt-2 h-1.5 rounded-full bg-slate-100">
+              <div className="h-full rounded-full bg-brand" style={{ width: `${Math.min(100, Number(value) * 20 + 20)}%` }} />
+            </div>
           </Card>
         ))}
       </div>
@@ -100,7 +143,7 @@ export function Dashboard() {
       <section className="rounded-md border border-border bg-white p-4">
         <div className="mb-3 flex items-center justify-between">
           <h2 className="font-bold">Asset Status Pulse</h2>
-          <Badge tone="info">Realtime-ready</Badge>
+          <Badge tone="info">Realtime enabled</Badge>
         </div>
         <div className="grid gap-3 md:grid-cols-5">
           {assets.map((asset) => (

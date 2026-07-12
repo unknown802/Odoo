@@ -75,7 +75,7 @@ export function Login() {
         <h3 className="font-bold">Auth State</h3>
         <Notice
           tone={isSupabaseConfigured ? "success" : "warning"}
-          message={isSupabaseConfigured ? "Supabase auth variables are configured." : "Demo mode is active until Supabase env values are added."}
+          message={isSupabaseConfigured ? "Supabase auth variables are configured." : "Local sample workspace is active until Supabase env values are added."}
         />
         <div className="grid gap-2 text-sm text-muted">
           <div>Signup creates an Employee profile through the database trigger.</div>

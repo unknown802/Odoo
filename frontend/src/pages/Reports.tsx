@@ -1,4 +1,3 @@
-import Papa from "papaparse";
 import { BarChart, Bar, CartesianGrid, Cell, Line, LineChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { Download } from "lucide-react";
 import { Button } from "../components/ui/Button";
@@ -36,6 +35,10 @@ export function Reports() {
   ];
 
   const overdueRows = allocations.filter((allocation) => allocation.status === "Active" && allocation.expected_return_date && allocation.expected_return_date < "2026-07-12");
+  const exportOverdueCsv = async () => {
+    const Papa = await import("papaparse");
+    exportCsv("overdue-returns.csv", Papa.default.unparse(overdueRows));
+  };
 
   return (
     <div className="grid gap-5">
@@ -86,7 +89,7 @@ export function Reports() {
           <Button
             variant="secondary"
             title="Export CSV"
-            onClick={() => exportCsv("overdue-returns.csv", Papa.unparse(overdueRows))}
+            onClick={() => void exportOverdueCsv()}
           >
             <Download className="h-4 w-4" /> CSV
           </Button>

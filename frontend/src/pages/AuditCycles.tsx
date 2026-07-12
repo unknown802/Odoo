@@ -1,5 +1,4 @@
 import { FileDown, Lock, Plus } from "lucide-react";
-import { jsPDF } from "jspdf";
 import { useState } from "react";
 import { Badge } from "../components/ui/Badge";
 import { Button } from "../components/ui/Button";
@@ -35,9 +34,10 @@ export function AuditCycles() {
     setMessage(result.message);
   };
 
-  const exportPdf = (cycleId: string) => {
+  const exportPdf = async (cycleId: string) => {
     const cycle = cycles.find((candidate) => candidate.id === cycleId);
     if (!cycle) return;
+    const { jsPDF } = await import("jspdf");
     const doc = new jsPDF();
     doc.text(cycle.title, 14, 16);
     cycle.items.forEach((item, index) => {
@@ -93,7 +93,7 @@ export function AuditCycles() {
               </div>
               <div className="flex flex-wrap gap-2">
                 <Badge tone={statusTone(cycle.status)}>{cycle.status.replace("_", " ")}</Badge>
-                <Button variant="secondary" onClick={() => exportPdf(cycle.id)} title="Export PDF">
+                <Button variant="secondary" onClick={() => void exportPdf(cycle.id)} title="Export PDF">
                   <FileDown className="h-4 w-4" /> PDF
                 </Button>
                 <Button variant="secondary" onClick={() => setMessage(closeAuditCycle(cycle.id).message)} title="Close audit">

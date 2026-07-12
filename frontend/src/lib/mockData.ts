@@ -212,7 +212,7 @@ export const transferRequests: TransferRequest[] = [
     requested_by_id: "user-meera",
     status: "Requested",
     requested_at: "2026-07-12T06:00:00.000Z",
-    notes: "Needed for client demo workstation."
+    notes: "Needed for client review workstation."
   }
 ];
 
@@ -270,7 +270,7 @@ export const activityLogs: ActivityLog[] = [
     action: "Transfer requested",
     entity_type: "transfer_request",
     entity_id: "transfer-001",
-    details: { reason: "Client demo" },
+    details: { reason: "Client review" },
     created_at: "2026-07-12T06:00:00.000Z"
   }
 ];

@@ -9,6 +9,7 @@ import { useAssetFlowStore } from "../store/assetFlowStore";
 
 export function ActivityLogs() {
   const currentUserId = useAssetFlowStore((state) => state.currentUserId);
+  const currentRole = useAssetFlowStore((state) => state.currentRole);
   const notifications = useAssetFlowStore((state) => state.notifications);
   const markAllNotificationsRead = useAssetFlowStore((state) => state.markAllNotificationsRead);
   const activityLogs = useAssetFlowStore((state) => state.activityLogs);
@@ -19,9 +20,10 @@ export function ActivityLogs() {
     () => activityLogs.filter((log) => !filter || log.action.toLowerCase().includes(filter.toLowerCase())),
     [activityLogs, filter]
   );
+  const canViewLogs = currentRole === "Admin" || currentRole === "Asset_Manager";
 
   return (
-    <div className="grid gap-5 xl:grid-cols-[0.8fr_1.2fr]">
+    <div className={`grid gap-5 ${canViewLogs ? "xl:grid-cols-[0.8fr_1.2fr]" : ""}`}>
       <Card>
         <div className="flex items-center justify-between gap-3">
           <h2 className="font-bold">Notifications</h2>
@@ -46,37 +48,39 @@ export function ActivityLogs() {
         </div>
       </Card>
 
-      <section className="grid gap-4 content-start">
-        <Card>
-          <Field label="Filter action">
-            <Input value={filter} onChange={(event) => setFilter(event.target.value)} placeholder="maintenance, transfer, booking" />
-          </Field>
-        </Card>
-        <div className="table-shell">
-          <table>
-            <thead>
-              <tr>
-                <th>Timestamp</th>
-                <th>User</th>
-                <th>Action</th>
-                <th>Entity</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredLogs.map((log) => (
-                <tr key={log.id}>
-                  <td>{formatDate(log.created_at)}</td>
-                  <td>{profiles.find((profile) => profile.id === log.user_id)?.full_name}</td>
-                  <td>
-                    <Badge tone={statusTone(log.action)}>{log.action}</Badge>
-                  </td>
-                  <td>{log.entity_type}</td>
+      {canViewLogs && (
+        <section className="grid gap-4 content-start">
+          <Card>
+            <Field label="Filter action">
+              <Input value={filter} onChange={(event) => setFilter(event.target.value)} placeholder="maintenance, transfer, booking" />
+            </Field>
+          </Card>
+          <div className="table-shell">
+            <table>
+              <thead>
+                <tr>
+                  <th>Timestamp</th>
+                  <th>User</th>
+                  <th>Action</th>
+                  <th>Entity</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
+              </thead>
+              <tbody>
+                {filteredLogs.map((log) => (
+                  <tr key={log.id}>
+                    <td>{formatDate(log.created_at)}</td>
+                    <td>{profiles.find((profile) => profile.id === log.user_id)?.full_name}</td>
+                    <td>
+                      <Badge tone={statusTone(log.action)}>{log.action}</Badge>
+                    </td>
+                    <td>{log.entity_type}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      )}
     </div>
   );
 }

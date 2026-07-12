@@ -36,7 +36,7 @@ export const navItems: Array<{
   { key: "maintenance", label: "Maintenance", icon: Wrench, roles: ["Admin", "Asset_Manager", "Department_Head", "Employee"] },
   { key: "audits", label: "Audits", icon: ClipboardCheck, roles: ["Admin", "Asset_Manager", "Department_Head", "Employee"] },
   { key: "reports", label: "Reports", icon: BarChart3, roles: ["Admin", "Asset_Manager", "Department_Head"] },
-  { key: "activity", label: "Activity", icon: Activity, roles: ["Admin", "Asset_Manager"] }
+  { key: "activity", label: "Notifications & Logs", icon: Activity, roles: ["Admin", "Asset_Manager", "Department_Head", "Employee"] }
 ];
 
 export const notificationIcon = Bell;

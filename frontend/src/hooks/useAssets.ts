@@ -4,13 +4,13 @@ import { useAssetFlowStore } from "../store/assetFlowStore";
 import type { Asset } from "../types";
 
 export function useAssets(filters?: { status?: string; search?: string }) {
-  const demoAssets = useAssetFlowStore((state) => state.assets);
+  const sampleAssets = useAssetFlowStore((state) => state.assets);
 
   return useQuery({
-    queryKey: ["assets", filters, demoAssets],
+    queryKey: ["assets", filters, sampleAssets],
     queryFn: async () => {
       if (!supabase) {
-        return demoAssets.filter((asset) => {
+        return sampleAssets.filter((asset) => {
           const statusMatch = !filters?.status || filters.status === "All" || asset.status === filters.status;
           const search = filters?.search?.toLowerCase() ?? "";
           const searchMatch =

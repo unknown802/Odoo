@@ -1,4 +1,5 @@
-import { Bell, CircleUserRound, Menu } from "lucide-react";
+import { Bell, CircleUserRound, Menu, X } from "lucide-react";
+import { useState } from "react";
 import { navItems, roleLabels } from "../../lib/constants";
 import { cn } from "../../lib/utils";
 import { useNotifications } from "../../hooks/useNotifications";
@@ -8,6 +9,7 @@ import type { Role } from "../../types";
 import { Button } from "../ui/Button";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
+  const [mobileOpen, setMobileOpen] = useState(false);
   const activeView = useAssetFlowStore((state) => state.activeView);
   const setActiveView = useAssetFlowStore((state) => state.setActiveView);
   const currentRole = useAssetFlowStore((state) => state.currentRole);
@@ -21,6 +23,26 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   useRealtimeNotifications(currentUserId);
 
   const visibleItems = navItems.filter((item) => item.roles.includes(currentRole));
+  const renderNav = (isMobile = false) =>
+    visibleItems.map((item) => {
+      const Icon = item.icon;
+      return (
+        <button
+          key={item.key}
+          className={cn(
+            "focus-ring flex min-h-10 items-center gap-3 rounded-md px-3 text-left text-sm font-semibold text-slate-600 transition hover:bg-slate-50",
+            activeView === item.key && "bg-brand-light text-brand-dark"
+          )}
+          onClick={() => {
+            setActiveView(item.key);
+            if (isMobile) setMobileOpen(false);
+          }}
+        >
+          <Icon className="h-4 w-4" />
+          {item.label}
+        </button>
+      );
+    });
 
   return (
     <div className="min-h-screen bg-[#f7faf9] text-ink">
@@ -32,30 +54,34 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <div className="text-xs text-muted">Enterprise</div>
           </div>
         </div>
-        <nav className="grid gap-1 p-3">
-          {visibleItems.map((item) => {
-            const Icon = item.icon;
-            return (
-              <button
-                key={item.key}
-                className={cn(
-                  "focus-ring flex min-h-10 items-center gap-3 rounded-md px-3 text-left text-sm font-semibold text-slate-600 transition hover:bg-slate-50",
-                  activeView === item.key && "bg-brand-light text-brand-dark"
-                )}
-                onClick={() => setActiveView(item.key)}
-              >
-                <Icon className="h-4 w-4" />
-                {item.label}
-              </button>
-            );
-          })}
-        </nav>
+        <nav className="grid gap-1 p-3">{renderNav()}</nav>
       </aside>
+
+      {mobileOpen && (
+        <div className="fixed inset-0 z-30 lg:hidden">
+          <button className="absolute inset-0 bg-slate-950/40" aria-label="Close navigation" onClick={() => setMobileOpen(false)} />
+          <aside className="relative h-full w-72 border-r border-border bg-white shadow-soft">
+            <div className="flex h-16 items-center justify-between border-b border-border px-4">
+              <div className="flex items-center gap-3">
+                <div className="grid h-10 w-10 place-items-center rounded-md bg-brand text-base font-black text-white">AF</div>
+                <div>
+                  <div className="font-bold">AssetFlow</div>
+                  <div className="text-xs text-muted">Enterprise</div>
+                </div>
+              </div>
+              <Button variant="ghost" className="h-10 w-10 px-0" title="Close navigation" onClick={() => setMobileOpen(false)}>
+                <X className="h-5 w-5" />
+              </Button>
+            </div>
+            <nav className="grid gap-1 p-3">{renderNav(true)}</nav>
+          </aside>
+        </div>
+      )}
 
       <div className="lg:pl-64">
         <header className="sticky top-0 z-10 flex min-h-16 items-center justify-between border-b border-border bg-white/95 px-4 backdrop-blur md:px-6">
           <div className="flex min-w-0 items-center gap-3">
-            <Button className="lg:hidden" variant="ghost" title="Menu">
+            <Button className="lg:hidden" variant="ghost" title="Menu" onClick={() => setMobileOpen(true)}>
               <Menu className="h-5 w-5" />
             </Button>
             <div className="min-w-0">
@@ -71,7 +97,14 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               id="role-switcher"
               className="focus-ring h-10 rounded-md border border-border bg-white px-2 text-sm font-semibold"
               value={currentRole}
-              onChange={(event) => setCurrentRole(event.target.value as Role)}
+              onChange={(event) => {
+                const nextRole = event.target.value as Role;
+                setCurrentRole(nextRole);
+                const currentItem = navItems.find((item) => item.key === activeView);
+                if (currentItem && !currentItem.roles.includes(nextRole)) {
+                  setActiveView("dashboard");
+                }
+              }}
             >
               {Object.entries(roleLabels).map(([role, label]) => (
                 <option key={role} value={role}>
