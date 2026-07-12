@@ -6,15 +6,15 @@ export function Label({ children }: { children: React.ReactNode }) {
 }
 
 export function Input(props: InputHTMLAttributes<HTMLInputElement>) {
-  return <input {...props} className={cn("focus-ring h-10 rounded-md border border-border bg-white px-3 text-sm", props.className)} />;
+  return <input {...props} className={cn("focus-ring h-11 rounded-xl border border-border bg-white px-3 text-sm transition-shadow", props.className)} />;
 }
 
 export function Select(props: SelectHTMLAttributes<HTMLSelectElement>) {
-  return <select {...props} className={cn("focus-ring h-10 rounded-md border border-border bg-white px-3 text-sm", props.className)} />;
+  return <select {...props} className={cn("focus-ring h-11 rounded-xl border border-border bg-white px-3 text-sm transition-shadow", props.className)} />;
 }
 
 export function Textarea(props: TextareaHTMLAttributes<HTMLTextAreaElement>) {
-  return <textarea {...props} className={cn("focus-ring min-h-24 rounded-md border border-border bg-white px-3 py-2 text-sm", props.className)} />;
+  return <textarea {...props} className={cn("focus-ring min-h-24 rounded-xl border border-border bg-white px-3 py-2 text-sm transition-shadow", props.className)} />;
 }
 
 export function Field({ label, children }: { label: string; children: React.ReactNode }) {

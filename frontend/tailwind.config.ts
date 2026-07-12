@@ -5,23 +5,29 @@ export default {
   theme: {
     extend: {
       colors: {
-        border: "hsl(214 32% 91%)",
-        surface: "hsl(0 0% 100%)",
-        ink: "hsl(222 47% 11%)",
-        muted: "hsl(215 16% 47%)",
+        border: "#E2E8F0",
+        surface: "#FFFFFF",
+        background: "#F8FAFC",
+        ink: "#0F172A",
+        muted: "#64748B",
         brand: {
-          DEFAULT: "hsl(173 80% 32%)",
-          dark: "hsl(184 84% 22%)",
-          light: "hsl(166 76% 94%)"
+          DEFAULT: "#2563EB",
+          dark: "#1D4ED8",
+          light: "#DBEAFE"
         },
-        accent: {
-          DEFAULT: "hsl(36 94% 52%)",
-          soft: "hsl(39 100% 94%)"
+        success: {
+          DEFAULT: "#10B981",
+          soft: "#D1FAE5"
+        },
+        warning: {
+          DEFAULT: "#F59E0B",
+          soft: "#FEF3C7"
         },
         danger: {
-          DEFAULT: "hsl(0 78% 56%)",
-          soft: "hsl(0 86% 97%)"
-        }
+          DEFAULT: "#EF4444",
+          soft: "#FEE2E2"
+        },
+        hover: "#F1F5F9"
       },
       boxShadow: {
         soft: "0 18px 60px rgba(15, 23, 42, 0.08)"
