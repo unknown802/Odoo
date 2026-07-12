@@ -61,6 +61,13 @@ interface AssetFlowState {
   createAuditCycle: (cycle: Omit<AuditCycle, "id" | "status" | "created_by_id" | "items">) => ActionResult;
   updateAuditItem: (cycleId: string, itemId: string, status: AuditCycle["items"][number]["status"], notes?: string) => void;
   closeAuditCycle: (cycleId: string) => ActionResult;
+  getAuditSummary: () => {
+    total: number;
+    verified: number;
+    pending: number;
+    missing: number;
+    damaged: number;
+  };
   markAllNotificationsRead: () => void;
 }
 
@@ -352,33 +359,62 @@ export const useAssetFlowStore = create<AssetFlowState>((set, get) => ({
   },
   createAuditCycle: (cycle) => {
     const state = get();
+
     const scopedAssets = state.assets.filter((asset) => {
-      const departmentMatch = !cycle.scope_department_id || asset.current_department_id === cycle.scope_department_id;
+      const deptMatch = !cycle.scope_department_id || asset.current_department_id === cycle.scope_department_id;
+
       const locationMatch = !cycle.scope_location || asset.location.toLowerCase().includes(cycle.scope_location.toLowerCase());
-      return departmentMatch && locationMatch;
+
+      return deptMatch && locationMatch;
     });
 
+    if (scopedAssets.length === 0) {
+      return {
+        ok: false,
+        message: "No assets found for the selected scope."
+      };
+    }
+
     const cycleId = id("audit");
+
     const next: AuditCycle = {
       ...cycle,
       id: cycleId,
       status: "In_Progress",
       created_by_id: state.currentUserId,
-      items: scopedAssets.map((asset, index) => ({
+
+      items: scopedAssets.map((asset) => ({
         id: id("audit-item"),
         audit_cycle_id: cycleId,
         asset_id: asset.id,
-        auditor_id: cycle.auditor_ids[index % Math.max(cycle.auditor_ids.length, 1)] ?? null,
-        status: "Pending"
+        auditor_id: cycle.auditor_ids[0] ?? null,
+        status: "Pending",
+        notes: "",
+        verified_at: null
       }))
     };
 
     set({
       auditCycles: [next, ...state.auditCycles],
-      activityLogs: [addLog(state, "Audit cycle created", "audit_cycle", next.id, { items: next.items.length }), ...state.activityLogs]
+
+      activityLogs: [
+        addLog(
+          state,
+          "Audit Cycle Created",
+          "audit_cycle",
+          next.id,
+          {
+            total_assets: next.items.length
+          }
+        ),
+        ...state.activityLogs
+      ]
     });
 
-    return { ok: true, message: `Audit cycle created with ${next.items.length} assets.` };
+    return {
+      ok: true,
+      message: `Audit created with ${next.items.length} assets.`
+    };
   },
   updateAuditItem: (cycleId, itemId, status, notes) =>
     set((state) => ({
@@ -387,28 +423,133 @@ export const useAssetFlowStore = create<AssetFlowState>((set, get) => ({
           ? {
               ...cycle,
               items: cycle.items.map((item) =>
-                item.id === itemId ? { ...item, status, notes, verified_at: status === "Pending" ? null : new Date().toISOString() } : item
+                item.id === itemId
+                  ? {
+                      ...item,
+                      status,
+                      notes,
+                      verified_at: status === "Pending" ? null : new Date().toISOString()
+                    }
+                  : item
               )
             }
           : cycle
       ),
-      activityLogs: [addLog(state, "Audit item updated", "audit_item", itemId, { status }), ...state.activityLogs]
+
+      activityLogs: [
+        addLog(
+          state,
+          "Audit Updated",
+          "audit_item",
+          itemId,
+          {
+            status
+          }
+        ),
+        ...state.activityLogs
+      ]
     })),
   closeAuditCycle: (cycleId) => {
     const state = get();
-    const cycle = state.auditCycles.find((candidate) => candidate.id === cycleId);
-    if (!cycle) return { ok: false, message: "Audit cycle not found." };
-    const missingAssetIds = cycle.items.filter((item) => item.status === "Missing").map((item) => item.asset_id);
+
+    const cycle = state.auditCycles.find((c) => c.id === cycleId);
+
+    if (!cycle) {
+      return {
+        ok: false,
+        message: "Audit cycle not found."
+      };
+    }
+
+    const missingAssets = cycle.items.filter((item) => item.status === "Missing");
+
+    const damagedAssets = cycle.items.filter((item) => item.status === "Damaged");
 
     set({
-      auditCycles: state.auditCycles.map((candidate) =>
-        candidate.id === cycleId ? { ...candidate, status: "Closed", end_date: new Date().toISOString().slice(0, 10) } : candidate
+      auditCycles: state.auditCycles.map((cycle) =>
+        cycle.id === cycleId
+          ? {
+              ...cycle,
+              status: "Closed",
+              end_date: new Date().toISOString().slice(0, 10)
+            }
+          : cycle
       ),
-      assets: state.assets.map((asset) => (missingAssetIds.includes(asset.id) ? { ...asset, status: "Lost" } : asset)),
-      activityLogs: [addLog(state, "Audit cycle closed", "audit_cycle", cycleId, { missing: missingAssetIds.length }), ...state.activityLogs]
+
+      assets: state.assets.map((asset) => {
+        if (missingAssets.some((m) => m.asset_id === asset.id)) {
+          return {
+            ...asset,
+            status: "Lost"
+          };
+        }
+
+        if (damagedAssets.some((m) => m.asset_id === asset.id)) {
+          return {
+            ...asset,
+            condition: "Damaged"
+          };
+        }
+
+        return asset;
+      }),
+
+      notifications: [
+        {
+          id: id("note"),
+          user_id: state.currentUserId,
+          type: "Audit_Completed",
+          title: "Audit Closed",
+
+          message: `${missingAssets.length} Missing | ${damagedAssets.length} Damaged`,
+
+          is_read: false,
+
+          created_at: new Date().toISOString()
+        },
+
+        ...state.notifications
+      ],
+
+      activityLogs: [
+        addLog(
+          state,
+          "Audit Closed",
+          "audit_cycle",
+          cycleId,
+          {
+            missing: missingAssets.length,
+            damaged: damagedAssets.length
+          }
+        ),
+
+        ...state.activityLogs
+      ]
     });
 
-    return { ok: true, message: `${missingAssetIds.length} missing assets marked Lost.` };
+    return {
+      ok: true,
+      message: "Audit completed successfully."
+    };
+  },
+  getAuditSummary: () => {
+    const items: Array<AuditCycle["items"][number]> = [];
+
+    for (const cycle of get().auditCycles) {
+      items.push(...cycle.items);
+    }
+
+    return {
+      total: items.length,
+
+      verified: items.filter((i) => i.status === "Verified").length,
+
+      pending: items.filter((i) => i.status === "Pending").length,
+
+      missing: items.filter((i) => i.status === "Missing").length,
+
+      damaged: items.filter((i) => i.status === "Damaged").length
+    };
   },
   markAllNotificationsRead: () =>
     set((state) => ({
