@@ -4,13 +4,15 @@ import { cn } from "../../lib/utils";
 const styles = {
   success: "border-emerald-200 bg-emerald-50 text-emerald-800",
   warning: "border-amber-200 bg-amber-50 text-amber-800",
-  info: "border-sky-200 bg-sky-50 text-sky-800"
+  info: "border-sky-200 bg-sky-50 text-sky-800",
+  danger: "border-red-200 bg-red-50 text-red-800"
 };
 
 const icons = {
   success: CheckCircle2,
   warning: AlertTriangle,
-  info: Info
+  info: Info,
+  danger: AlertTriangle
 };
 
 export function Notice({ message, tone = "info" }: { message: string; tone?: keyof typeof styles }) {

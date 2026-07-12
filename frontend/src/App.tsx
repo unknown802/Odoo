@@ -4,7 +4,7 @@ import { AssetAllocation } from "./pages/AssetAllocation";
 import { AssetDirectory } from "./pages/AssetDirectory";
 import { AuditCycles } from "./pages/AuditCycles";
 import { Dashboard } from "./pages/Dashboard";
-import { Login } from "./pages/Login";
+import { Login } from "../Login";
 import { Maintenance } from "./pages/Maintenance";
 import { OrganizationSetup } from "./pages/OrganizationSetup";
 import { Reports } from "./pages/Reports";

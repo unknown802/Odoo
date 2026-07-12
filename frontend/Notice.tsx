@@ -1,5 +1,5 @@
 import { AlertTriangle, CheckCircle2, Info } from "lucide-react";
-import { cn } from "../../lib/utils";
+import { cn } from "./Utils";
 
 const styles = {
   success: "border-emerald-200 bg-emerald-50 text-emerald-800",

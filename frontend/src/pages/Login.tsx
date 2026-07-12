@@ -44,11 +44,11 @@ export function Login() {
   });
 
   return (
-    <div className="grid gap-5 lg:grid-cols-[0.9fr_1.1fr]">
-      <Card className="p-5">
-        <h2 className="text-xl font-bold">Workspace Access</h2>
-        <p className="mt-2 text-sm text-muted">Email/password auth with employee-only signup defaults.</p>
-        <form className="mt-5 grid gap-4" onSubmit={signIn}>
+    <div className="mx-auto grid w-full max-w-6xl gap-8 lg:grid-cols-[1fr_1fr] lg:items-start">
+      <Card className="rounded-2xl p-8 shadow-lg">
+        <h2 className="text-3xl font-bold tracking-tight">Workspace Access</h2>
+        <p className="mt-2 text-base leading-relaxed text-muted">Email/password auth with employee-only signup defaults.</p>
+        <form className="mt-6 grid gap-5" onSubmit={signIn}>
           <Field label="Full name">
             <Input placeholder="New signup only" {...form.register("fullName")} />
           </Field>
@@ -58,7 +58,7 @@ export function Login() {
           <Field label="Password">
             <Input type="password" {...form.register("password")} />
           </Field>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-3 pt-2">
             <Button type="submit" title="Sign in">
               <LogIn className="h-4 w-4" /> Sign In
             </Button>
@@ -71,13 +71,13 @@ export function Login() {
           </div>
         </form>
       </Card>
-      <div className="grid content-start gap-3 rounded-md border border-border bg-white p-5">
-        <h3 className="font-bold">Auth State</h3>
+      <div className="rounded-2xl border border-border bg-white p-8 shadow-lg">
+        <h3 className="text-xl font-bold">Auth State</h3>
         <Notice
           tone={isSupabaseConfigured ? "success" : "warning"}
           message={isSupabaseConfigured ? "Supabase auth variables are configured." : "Demo mode is active until Supabase env values are added."}
         />
-        <div className="grid gap-2 text-sm text-muted">
+        <div className="mt-4 grid gap-3 text-base text-muted">
           <div>Signup creates an Employee profile through the database trigger.</div>
           <div>Role changes are restricted to Admins inside Organization.</div>
           <div>API routes require Supabase JWT bearer tokens.</div>

@@ -48,6 +48,25 @@ export function exportCsv(filename: string, csv: string) {
   URL.revokeObjectURL(url);
 }
 
+export interface PasswordStrength {
+  score: 0 | 1 | 2 | 3 | 4;
+  label: "Too short" | "Weak" | "Fair" | "Good" | "Strong";
+}
+
+export function passwordStrength(password: string): PasswordStrength {
+  if (password.length < 8) return { score: 0, label: "Too short" };
+
+  let score = 1;
+  if (password.length >= 12) score++;
+  if (/[A-Z]/.test(password) && /[a-z]/.test(password)) score++;
+  if (/\d/.test(password)) score++;
+  if (/[^A-Za-z0-9]/.test(password)) score++;
+
+  const clamped = Math.min(score, 4) as 0 | 1 | 2 | 3 | 4;
+  const labels: PasswordStrength["label"][] = ["Too short", "Weak", "Fair", "Good", "Strong"];
+  return { score: clamped, label: labels[clamped] };
+}
+
 export function statusTone(status: string) {
   if (["Available", "Verified", "Resolved", "Completed", "Active"].includes(status)) return "success";
   if (["Allocated", "Upcoming", "Approved", "In_Progress", "Reserved"].includes(status)) return "info";

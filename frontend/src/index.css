@@ -4,42 +4,73 @@
 
 :root {
   color: #0f172a;
-  background: #f7faf9;
+  background: #f8fafc;
+  font-family: Inter, sans-serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-body {
-  margin: 0;
-  min-width: 320px;
-  min-height: 100vh;
+*{
+  box-sizing:border-box;
+}
+
+html,
+body,
+#root{
+  width:100%;
+  min-height:100vh;
+}
+
+body{
+  margin:0;
+  background:#f8fafc;
 }
 
 button,
 input,
 select,
-textarea {
-  font: inherit;
+textarea{
+  font:inherit;
 }
 
-.focus-ring {
-  @apply focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand;
+input,
+select,
+textarea{
+  @apply w-full rounded-lg border border-slate-300 px-3 py-2 transition-all;
 }
 
-.table-shell {
-  @apply overflow-hidden rounded-md border border-border bg-white;
+input:focus,
+select:focus,
+textarea:focus{
+  @apply border-teal-600 ring-2 ring-teal-100 outline-none;
 }
 
-.table-shell table {
+button{
+  @apply transition-all duration-200;
+}
+
+.focus-ring{
+  @apply focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600;
+}
+
+.card{
+  @apply bg-white rounded-xl shadow-sm border border-slate-200;
+}
+
+.table-shell{
+  @apply overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm;
+}
+
+.table-shell table{
   @apply w-full border-collapse text-left text-sm;
 }
 
-.table-shell th {
-  @apply bg-slate-50 px-4 py-3 text-xs font-semibold uppercase tracking-normal text-slate-500;
+.table-shell th{
+  @apply bg-slate-50 px-4 py-3 text-xs font-semibold uppercase text-slate-500;
 }
 
-.table-shell td {
-  @apply border-t border-border px-4 py-3 align-top;
+.table-shell td{
+  @apply border-t border-slate-200 px-4 py-3;
 }

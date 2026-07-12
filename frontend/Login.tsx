@@ -16,16 +16,16 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import { useForm, type UseFormRegisterReturn } from "react-hook-form";
 import { z } from "zod";
-import { Badge } from "../components/ui/Badge";
-import { Button } from "../components/ui/Button";
-import { Card } from "../components/ui/Card";
-import { Field, Input } from "../components/ui/Field";
-import { Notice } from "../components/ui/Notice";
-import { roleLabels } from "../lib/constants";
-import { isSupabaseConfigured, supabase } from "../lib/supabase";
-import { cn, passwordStrength, statusTone } from "../lib/utils";
-import { useAssetFlowStore } from "../store/assetFlowStore";
-import type { Role } from "../types";
+import { Badge } from "./src/components/ui/Badge";
+import { Button } from "./src/components/ui/Button";
+import { Card } from "./src/components/ui/Card";
+import { Field, Input } from "./Field";
+import { Notice } from "./Notice";
+import { roleLabels } from "./src/lib/constants";
+import { isSupabaseConfigured, supabase } from "./src/lib/supabase";
+import { cn, passwordStrength, statusTone } from "./Utils";
+import { useAssetFlowStore } from "./src/store/assetFlowStore";
+import type { Role } from "./src/types";
 
 type Mode = "signin" | "signup" | "reset";
 
@@ -168,7 +168,7 @@ function PasswordField({
 
 function LedgerPanel() {
   return (
-    <div className="bg-blueprint-grid relative hidden flex-col justify-between overflow-hidden rounded-md border border-border bg-gradient-to-br from-[hsl(184,84%,20%)] via-[hsl(178,68%,24%)] to-[hsl(222,47%,11%)] p-8 text-white shadow-soft lg:flex">
+    <div className="bg-blueprint-grid relative hidden flex-col justify-between overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-[hsl(184,84%,20%)] via-[hsl(178,68%,24%)] to-[hsl(222,47%,11%)] p-10 text-white shadow-soft lg:flex">
       <div className="animate-rise" style={{ animationDelay: "80ms" }}>
         <span className="text-xs font-semibold uppercase tracking-wide text-white/60">AssetFlow Enterprise</span>
         <h2 className="mt-2 text-2xl font-bold leading-snug">Every asset, always accounted for.</h2>
@@ -184,7 +184,7 @@ function LedgerPanel() {
           return (
             <div
               key={stat.label}
-              className="animate-rise rounded-md border border-white/15 bg-white/10 p-3 backdrop-blur"
+              className="animate-rise rounded-2xl border border-white/15 bg-white/10 p-3 backdrop-blur"
               style={{ animationDelay: `${160 + index * 90}ms` }}
             >
               <Icon className="h-4 w-4 text-white/70" />
@@ -201,7 +201,7 @@ function LedgerPanel() {
           {ledgerPreview.map((item, index) => (
             <div
               key={item.tag}
-              className="animate-rise flex items-center justify-between gap-3 rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm"
+              className="animate-rise flex items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-sm"
               style={{ animationDelay: `${420 + index * 90}ms` }}
             >
               <div className="flex min-w-0 items-center gap-2">
@@ -335,12 +335,12 @@ export function Login() {
         : "We'll email you a secure link to set a new password.";
 
   return (
-    <div className="mx-auto grid w-full max-w-5xl animate-rise gap-6 py-2 lg:grid-cols-[1fr_1.05fr] lg:items-stretch">
-      <Card className="flex flex-col gap-6 p-6 sm:p-8">
+    <div className="mx-auto grid w-full max-w-7xl gap-10 px-8 py-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+      <Card className="mx-auto w-full max-w-xl flex flex-col gap-6 rounded-2xl p-8 shadow-xl">
         <div className="flex items-center justify-between gap-3">
           <div>
-            <h2 className="text-xl font-bold">{heading}</h2>
-            <p className="mt-1 text-sm text-muted">{subheading}</p>
+            <h2 className="text-3xl font-bold tracking-tight">{heading}</h2>
+            <p className="mt-2 text-base leading-relaxed text-muted">{subheading}</p>
           </div>
           {mode === "reset" ? (
             <Button variant="ghost" onClick={() => switchMode("signin")} title="Back to sign in" className="shrink-0 px-2">
@@ -350,7 +350,7 @@ export function Login() {
         </div>
 
         {mode !== "reset" ? (
-          <div role="tablist" aria-label="Authentication mode" className="inline-flex w-fit rounded-md bg-slate-100 p-1">
+          <div role="tablist" aria-label="Authentication mode" className="inline-flex rounded-xl bg-slate-100 p-1.5">
             <button
               role="tab"
               aria-selected={mode === "signin"}
@@ -406,7 +406,7 @@ export function Login() {
                 Forgot password?
               </button>
             </div>
-            <Button type="submit" disabled={pending} className="mt-1">
+            <Button type="submit" disabled={pending} className="mt-2 h-12 rounded-xl text-base font-semibold">
               {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : <LogIn className="h-4 w-4" />}
               {pending ? "Signing in…" : "Sign in"}
             </Button>
@@ -497,7 +497,7 @@ export function Login() {
         {!isSupabaseConfigured ? (
           <div className="grid gap-3 border-t border-border pt-5">
             <Notice tone="warning" message="Demo mode — no Supabase backend connected. Explore AssetFlow instantly as any workspace role." />
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid gap-3 sm:grid-cols-2">
               {demoRoles.map((role) => {
                 const sample = profiles.find((candidate) => candidate.role === role);
                 return (
@@ -508,7 +508,7 @@ export function Login() {
                       setCurrentRole(role);
                       setActiveView("dashboard");
                     }}
-                    className="focus-ring flex flex-col items-start gap-0.5 rounded-md border border-border bg-white px-3 py-2 text-left text-sm transition hover:border-brand hover:bg-brand-light/40"
+                    className="focus-ring flex flex-col items-start rounded-xl border border-slate-200 bg-white p-4 text-left text-sm shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-teal-500 hover:shadow-md"
                   >
                     <span className="font-semibold text-ink">{roleLabels[role]}</span>
                     <span className="text-xs text-muted">{sample?.full_name ?? "Sample profile"}</span>
