@@ -126,6 +126,24 @@ export const assets: Asset[] = [
     photos: [],
     documents: [],
     created_at: "2025-04-20T08:00:00.000Z"
+  },
+  {
+    id: "asset-agent-001",
+    name: "Agent Testing Server",
+    category_id: "cat-laptop",
+    asset_tag: "AF-AGENT-999",
+    serial_number: "SRV-AGENT-X",
+    acquisition_date: "2026-07-12",
+    acquisition_cost: 15000,
+    condition: "New",
+    location: "Server Room A",
+    status: "Available",
+    is_bookable: true,
+    current_holder_id: null,
+    current_department_id: "dept-eng",
+    photos: [],
+    documents: [],
+    created_at: "2026-07-12T10:00:00.000Z"
   }
 ];
 

@@ -1,16 +1,18 @@
-import { AlertTriangle, CheckCircle2, Info } from "lucide-react";
+import { AlertTriangle, CheckCircle2, Info, AlertCircle } from "lucide-react";
 import { cn } from "../../lib/utils";
 
 const styles = {
   success: "border-emerald-200 bg-emerald-50 text-emerald-800",
   warning: "border-amber-200 bg-amber-50 text-amber-800",
-  info: "border-sky-200 bg-sky-50 text-sky-800"
+  info: "border-sky-200 bg-sky-50 text-sky-800",
+  danger: "border-rose-200 bg-rose-50 text-rose-800"
 };
 
 const icons = {
   success: CheckCircle2,
   warning: AlertTriangle,
-  info: Info
+  info: Info,
+  danger: AlertCircle
 };
 
 export function Notice({ message, tone = "info" }: { message: string; tone?: keyof typeof styles }) {

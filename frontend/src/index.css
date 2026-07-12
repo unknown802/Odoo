@@ -1,35 +1,118 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* ── Design Tokens ─────────────────────────────────────────────────────────── */
 :root {
-  color: #0f172a;
-  background: #f7faf9;
+  /* Surfaces */
+  --color-background: #F8FAFC;
+  --color-surface: #FFFFFF;
+  --color-surface-raised: #FFFFFF;
+  --color-surface-overlay: rgba(255,255,255,0.85);
+
+  /* Borders */
+  --color-border: #E2E8F0;
+  --color-border-subtle: #F1F5F9;
+  --color-border-strong: #CBD5E1;
+
+  /* Ink / Text */
+  --color-ink: #0F172A;
+  --color-ink-secondary: #334155;
+  --color-muted: #64748B;
+  --color-muted-subtle: #94A3B8;
+
+  /* Hover */
+  --color-hover: #F1F5F9;
+  --color-hover-strong: #E2E8F0;
+
+  /* Slate scale (light) */
+  --color-slate-50: #f8fafc;
+  --color-slate-100: #f1f5f9;
+  --color-slate-200: #e2e8f0;
+  --color-slate-300: #cbd5e1;
+  --color-slate-400: #94a3b8;
+  --color-slate-500: #64748b;
+  --color-slate-600: #475569;
+  --color-slate-700: #334155;
+  --color-slate-800: #1e293b;
+  --color-slate-900: #0f172a;
+
+  /* Elevation shadows */
+  --shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-md: 0 4px 16px rgba(15, 23, 42, 0.06), 0 1px 4px rgba(15, 23, 42, 0.04);
+  --shadow-lg: 0 8px 32px rgba(15, 23, 42, 0.08), 0 2px 8px rgba(15, 23, 42, 0.04);
+  --shadow-xl: 0 20px 60px rgba(15, 23, 42, 0.10), 0 4px 16px rgba(15, 23, 42, 0.06);
+
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* ── Dark Mode ─────────────────────────────────────────────────────────────── */
+.dark {
+  --color-background: #020617;
+  --color-surface: #0F172A;
+  --color-surface-raised: #1E293B;
+  --color-surface-overlay: rgba(15, 23, 42, 0.85);
+
+  --color-border: #1E293B;
+  --color-border-subtle: #1E293B;
+  --color-border-strong: #334155;
+
+  --color-ink: #F1F5F9;
+  --color-ink-secondary: #CBD5E1;
+  --color-muted: #94A3B8;
+  --color-muted-subtle: #64748B;
+
+  --color-hover: #1E293B;
+  --color-hover-strong: #334155;
+
+  /* Slate scale (dark - inverted) */
+  --color-slate-50: #0f172a;
+  --color-slate-100: #1e293b;
+  --color-slate-200: #334155;
+  --color-slate-300: #475569;
+  --color-slate-400: #64748b;
+  --color-slate-500: #94a3b8;
+  --color-slate-600: #cbd5e1;
+  --color-slate-700: #e2e8f0;
+  --color-slate-800: #f1f5f9;
+  --color-slate-900: #f8fafc;
+
+  /* Dark shadows */
+  --shadow-xs: 0 1px 2px rgba(0,0,0,0.2);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.3), 0 1px 4px rgba(0,0,0,0.2);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.4), 0 2px 8px rgba(0,0,0,0.2);
+  --shadow-xl: 0 20px 60px rgba(0,0,0,0.5), 0 4px 16px rgba(0,0,0,0.3);
+}
+
+/* ── Base Resets ───────────────────────────────────────────────────────────── */
 body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+  background-color: var(--color-background);
+  color: var(--color-ink);
 }
 
-button,
-input,
-select,
-textarea {
+button, input, select, textarea {
   font: inherit;
 }
 
+/* ── Focus Ring ────────────────────────────────────────────────────────────── */
 .focus-ring {
   @apply focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand;
 }
 
+/* ── Table Shell ───────────────────────────────────────────────────────────── */
 .table-shell {
-  @apply overflow-hidden rounded-md border border-border bg-white;
+  @apply overflow-hidden rounded-2xl border border-border bg-surface;
 }
 
 .table-shell table {
@@ -37,9 +120,63 @@ textarea {
 }
 
 .table-shell th {
-  @apply bg-slate-50 px-4 py-3 text-xs font-semibold uppercase tracking-normal text-slate-500;
+  @apply bg-slate-50 px-5 py-3.5 text-xs font-semibold uppercase tracking-wider text-muted;
 }
 
 .table-shell td {
-  @apply border-t border-border px-4 py-3 align-top;
+  @apply border-t border-border px-5 py-4 align-middle;
 }
+
+/* ── Scroll bar styling ────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--color-border-strong); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-muted-subtle); }
+
+/* ── Number animation ──────────────────────────────────────────────────────── */
+@keyframes countUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.count-animate {
+  animation: countUp 0.4s ease-out both;
+}
+
+/* ── Enterprise card surface ───────────────────────────────────────────────── */
+.card-enterprise {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 200ms ease, transform 200ms ease;
+}
+
+.card-enterprise:hover {
+  box-shadow: var(--shadow-md);
+}
+
+/* ── Sidebar active pill ───────────────────────────────────────────────────── */
+.nav-active {
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.12), rgba(37, 99, 235, 0.06));
+  color: #2563EB;
+}
+
+/* ── Skeleton Shimmer ──────────────────────────────────────────────────────── */
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.animate-shimmer {
+  animation: shimmer 1.5s infinite linear;
+  background: linear-gradient(90deg, var(--color-hover) 25%, var(--color-hover-strong) 50%, var(--color-hover) 75%);
+  background-size: 400% 100%;
+}
+
+/* ── Dialog Backdrop ───────────────────────────────────────────────────────── */
+.dialog-backdrop {
+  background-color: var(--color-surface-overlay);
+  backdrop-filter: blur(4px);
+}
+

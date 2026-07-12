@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Search, AlertCircle, Clock, CheckCircle2, ChevronDown, ChevronUp, PackagePlus } from "lucide-react";
+import { Search, AlertCircle, Clock, CheckCircle2, ChevronDown, ChevronUp, Box } from "lucide-react";
 import { Badge } from "../ui/Badge";
 import { Card } from "../ui/Card";
 import { daysOverdue, formatDate } from "../../lib/utils";
@@ -69,7 +69,7 @@ export function OverdueReturnsTable({ overdueAllocations, assets, profiles }: Ov
 
   return (
     <Card className="flex flex-col overflow-hidden">
-      <div className="flex flex-col gap-4 border-b border-slate-200 bg-white p-5 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-4 border-b border-border bg-surface p-5 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <div className="flex items-center gap-3">
             <h3 className="text-lg font-bold text-slate-800">Overdue Returns</h3>
@@ -86,7 +86,7 @@ export function OverdueReturnsTable({ overdueAllocations, assets, profiles }: Ov
             placeholder="Search assets or holders..." 
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="h-9 w-full rounded-md border border-slate-200 bg-slate-50 pl-9 pr-4 text-sm outline-none transition-colors focus:border-brand focus:bg-white focus:ring-1 focus:ring-brand"
+            className="h-9 w-full rounded-xl border border-border bg-hover pl-9 pr-4 text-sm outline-none transition-all focus:border-brand/30 focus:bg-surface focus:ring-4 focus:ring-brand/10"
           />
         </div>
       </div>
@@ -115,11 +115,11 @@ export function OverdueReturnsTable({ overdueAllocations, assets, profiles }: Ov
               const isMediumRisk = overdueDays > 7 && overdueDays <= 14;
               
               return (
-                <tr key={allocation.id} className="bg-white hover:bg-slate-50 transition-colors group">
+                <tr key={allocation.id} className="bg-surface hover:bg-hover transition-colors group">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center gap-3">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-100 text-slate-500 group-hover:bg-white group-hover:shadow-sm transition-all border border-transparent group-hover:border-slate-200">
-                        <PackagePlus className="h-5 w-5" />
+                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-100 text-slate-500 group-hover:bg-surface group-hover:shadow-sm transition-all border border-transparent group-hover:border-slate-200">
+                        <Box className="h-5 w-5" />
                       </div>
                       <div>
                         <div className="font-semibold text-slate-800">{asset?.name}</div>
@@ -182,13 +182,9 @@ export function OverdueReturnsTable({ overdueAllocations, assets, profiles }: Ov
           </tbody>
         </table>
       </div>
-      <div className="flex items-center justify-between border-t border-slate-200 bg-slate-50 px-6 py-3">
-        <div className="text-xs text-slate-500">
-          Showing {sortedData.length} of {overdueAllocations.length} records
-        </div>
-        <div className="flex gap-1">
-          <button className="h-8 rounded px-3 text-xs font-medium text-slate-600 hover:bg-slate-200 disabled:opacity-50" disabled>Previous</button>
-          <button className="h-8 rounded px-3 text-xs font-medium text-slate-600 hover:bg-slate-200 disabled:opacity-50" disabled>Next</button>
+      <div className="flex items-center justify-between border-t border-border bg-hover/50 px-6 py-3">
+        <div className="text-xs text-muted">
+          Showing {sortedData.length} of {overdueAllocations.length} record{overdueAllocations.length !== 1 ? "s" : ""}
         </div>
       </div>
     </Card>

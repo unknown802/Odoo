@@ -1,26 +1,25 @@
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "../lib/supabase";
-import { useAssetFlowStore } from "../store/assetFlowStore";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { fetchApi } from "../lib/api";
 import type { NotificationItem } from "../types";
 
-export function useNotifications(userId: string) {
-  const demoNotifications = useAssetFlowStore((state) => state.notifications);
-
+export function useNotifications() {
   return useQuery({
-    queryKey: ["notifications", userId, demoNotifications],
+    queryKey: ["notifications"],
     queryFn: async () => {
-      if (!supabase) {
-        return demoNotifications.filter((notification) => notification.user_id === userId);
-      }
+      return fetchApi<NotificationItem[]>("/api/notifications");
+    }
+  });
+}
 
-      const { data, error } = await supabase
-        .from("notifications")
-        .select("*")
-        .eq("user_id", userId)
-        .order("created_at", { ascending: false })
-        .returns<NotificationItem[]>();
-      if (error) throw error;
-      return data;
+export function useMarkAllNotificationsRead() {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: async () => {
+      return fetchApi("/api/notifications/mark-all-read", { method: "PATCH" });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["notifications"] });
     }
   });
 }

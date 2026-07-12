@@ -3,10 +3,19 @@ import { getSupabaseAdminClient } from "../config/supabase.js";
 import { ApiError, asyncHandler } from "../errors.js";
 import { auth } from "../middleware/auth.js";
 import { requireRole } from "../middleware/rbac.js";
+import type { AuthenticatedRequest } from "../types/index.js";
 
 export const orgRouter = Router();
 
 orgRouter.use(auth);
+
+// Returns the currently authenticated user's profile (used for session bootstrap)
+orgRouter.get(
+  "/me",
+  asyncHandler<AuthenticatedRequest>(async (req, res) => {
+    res.json((req as AuthenticatedRequest).user);
+  })
+);
 
 orgRouter.get(
   "/bootstrap",
