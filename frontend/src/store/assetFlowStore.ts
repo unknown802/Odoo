@@ -47,19 +47,87 @@ interface AssetFlowState {
   auditCycles: AuditCycle[];
   notifications: NotificationItem[];
   activityLogs: ActivityLog[];
+
   setActiveView: (view: ViewKey) => void;
   setCurrentRole: (role: Role) => void;
-  registerAsset: (asset: Omit<Asset, "id" | "asset_tag" | "status" | "photos" | "documents" | "created_at">) => ActionResult;
-  allocateAsset: (assetId: string, userId: string, expectedReturnDate: string) => ActionResult;
-  returnAllocation: (allocationId: string, condition: Condition, notes: string) => ActionResult;
-  requestTransfer: (assetId: string, toUserId: string, notes: string) => ActionResult;
+
+  createDepartment: (
+    department: Omit<Department, "id" | "status">
+  ) => ActionResult;
+
+  createCategory: (
+    category: Omit<AssetCategory, "id" | "status">
+  ) => ActionResult;
+
+  createEmployee: (
+    profile: Omit<Profile, "id" | "status">
+  ) => ActionResult;
+
+  updateEmployeeRole: (
+    profileId: string,
+    role: Role
+  ) => ActionResult;
+
+  registerAsset: (
+    asset: Omit<
+      Asset,
+      "id" | "asset_tag" | "status" | "photos" | "documents" | "created_at"
+    >
+  ) => ActionResult;
+
+  allocateAsset: (
+    assetId: string,
+    userId: string,
+    expectedReturnDate: string
+  ) => ActionResult;
+
+  returnAllocation: (
+    allocationId: string,
+    condition: Condition,
+    notes: string
+  ) => ActionResult;
+
+  requestTransfer: (
+    assetId: string,
+    toUserId: string,
+    notes: string
+  ) => ActionResult;
+
   approveTransfer: (transferId: string) => ActionResult;
-  createBooking: (booking: Omit<Booking, "id" | "booked_by_id" | "status">) => ActionResult;
+
+  createBooking: (
+    booking: Omit<Booking, "id" | "booked_by_id" | "status">
+  ) => ActionResult;
+
   cancelBooking: (bookingId: string) => void;
-  createMaintenance: (request: Omit<MaintenanceRequest, "id" | "requested_by_id" | "photos" | "status" | "requested_at">) => ActionResult;
-  moveMaintenance: (requestId: string, status: MaintenanceRequest["status"], notes?: string) => ActionResult;
-  createAuditCycle: (cycle: Omit<AuditCycle, "id" | "status" | "created_by_id" | "items">) => ActionResult;
-  updateAuditItem: (cycleId: string, itemId: string, status: AuditCycle["items"][number]["status"], notes?: string) => void;
+
+  createMaintenance: (
+    request: Omit<
+      MaintenanceRequest,
+      "id" | "requested_by_id" | "photos" | "status" | "requested_at"
+    >
+  ) => ActionResult;
+
+  moveMaintenance: (
+    requestId: string,
+    status: MaintenanceRequest["status"],
+    notes?: string
+  ) => ActionResult;
+
+  createAuditCycle: (
+    cycle: Omit<
+      AuditCycle,
+      "id" | "status" | "created_by_id" | "items"
+    >
+  ) => ActionResult;
+
+  updateAuditItem: (
+    cycleId: string,
+    itemId: string,
+    status: AuditCycle["items"][number]["status"],
+    notes?: string
+  ) => void;
+
   closeAuditCycle: (cycleId: string) => ActionResult;
   markAllNotificationsRead: () => void;
 }
@@ -76,7 +144,7 @@ const addLog = (state: AssetFlowState, action: string, entity_type: string, enti
   created_at: new Date().toISOString()
 });
 
-export const useAssetFlowStore = create<AssetFlowState>((set, get) => ({
+  export const useAssetFlowStore = create<AssetFlowState>((set, get) => ({
   activeView: "dashboard",
   currentUserId: "user-admin",
   currentRole: "Admin",
@@ -98,6 +166,92 @@ export const useAssetFlowStore = create<AssetFlowState>((set, get) => ({
       get().profiles.find((candidate) => candidate.role === "Employee")!;
     set({ currentRole, currentUserId: profile.id });
   },
+  createDepartment: (department) => {
+  const state = get();
+
+  const next: Department = {
+    ...department,
+    id: id("dept"),
+    status: "Active"
+  };
+
+  set({
+    departments: [next, ...state.departments],
+    activityLogs: [
+      addLog(state, "Department created", "department", next.id),
+      ...state.activityLogs
+    ]
+  });
+
+  return { ok: true, message: `${next.name} department created.` };
+},
+
+createCategory: (category) => {
+  const state = get();
+
+  const next: AssetCategory = {
+    ...category,
+    id: id("category"),
+    status: "Active"
+  };
+
+  set({
+    categories: [next, ...state.categories],
+    activityLogs: [
+      addLog(state, "Category created", "asset_category", next.id),
+      ...state.activityLogs
+    ]
+  });
+
+  return { ok: true, message: `${next.name} category created.` };
+},
+
+createEmployee: (profile) => {
+  const state = get();
+
+  const next: Profile = {
+    ...profile,
+    id: id("user"),
+    status: "Active"
+  };
+
+  set({
+    profiles: [next, ...state.profiles],
+    activityLogs: [
+      addLog(state, "Employee created", "profile", next.id),
+      ...state.activityLogs
+    ]
+  });
+
+  return { ok: true, message: `${next.full_name} added successfully.` };
+},
+
+updateEmployeeRole: (profileId, role) => {
+  const state = get();
+  const profile = state.profiles.find((item) => item.id === profileId);
+
+  if (!profile) {
+    return { ok: false, message: "Employee not found." };
+  }
+
+  set({
+    profiles: state.profiles.map((item) =>
+      item.id === profileId ? { ...item, role } : item
+    ),
+    activityLogs: [
+      addLog(state, "Employee role updated", "profile", profileId, {
+        previous_role: profile.role,
+        new_role: role
+      }),
+      ...state.activityLogs
+    ]
+  });
+
+  return {
+    ok: true,
+    message: `${profile.full_name}'s role updated successfully.`
+  };
+},
   registerAsset: (asset) => {
     const state = get();
     const next: Asset = {
