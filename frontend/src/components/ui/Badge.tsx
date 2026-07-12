@@ -1,10 +1,10 @@
 import { cn } from "../../lib/utils";
 
 const tones = {
-  success: "bg-emerald-50 text-emerald-700 ring-emerald-200",
-  info: "bg-sky-50 text-sky-700 ring-sky-200",
-  warning: "bg-amber-50 text-amber-700 ring-amber-200",
-  danger: "bg-red-50 text-red-700 ring-red-200",
+  success: "bg-success-soft text-success ring-success/20",
+  info: "bg-brand-light text-brand ring-brand/20",
+  warning: "bg-warning-soft text-warning ring-warning/20",
+  danger: "bg-danger-soft text-danger ring-danger/20",
   neutral: "bg-slate-100 text-slate-700 ring-slate-200"
 };
 
