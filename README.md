@@ -60,6 +60,12 @@ supabase link --project-ref <your-project-ref>
 supabase db push
 ```
 
+For the hackathon project reference and setup notes, see [docs/SUPABASE_SETUP.md](docs/SUPABASE_SETUP.md).
+
+## Demo Guide
+
+Use [docs/HACKATHON_DEMO.md](docs/HACKATHON_DEMO.md) for the judge walkthrough and [docs/API.md](docs/API.md) for backend endpoint notes.
+
 ## Demo Mode
 
 The frontend works in demo mode when Supabase environment variables are missing. This keeps the hackathon walkthrough usable even before the database is linked.
